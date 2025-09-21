@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mexiti.costogasolina.ui.theme.CostoGasolinaTheme
 import java.text.NumberFormat
+import androidx.compose.ui.platform.testTag
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,7 +136,8 @@ fun CostGasLayout() {
         Text(
             text = stringResource(R.string.monto_total,total),
             fontWeight = FontWeight.Black,
-            fontSize = 30.sp
+            fontSize = 30.sp,
+            modifier = Modifier.testTag("Monto Total")
         )
 
     }
@@ -156,7 +160,7 @@ fun EditNumberField(
         leadingIcon = { Icon(painter = painterResource(id = leadingIcon) , contentDescription = null) },
         keyboardOptions = keyboardsOptions,
         modifier = modifier.fillMaxWidth()
-        ,
+            .testTag(stringResource(id = label)),
         onValueChange = onValueChanged,
 
     )
@@ -189,8 +193,8 @@ fun AddTip(
 
 }
 
-
-private fun calcularMonto(precio: Double, cantLitros: Double, darPropina: Boolean, propina:Double ): String{
+@VisibleForTesting
+internal fun calcularMonto(precio: Double, cantLitros: Double, darPropina: Boolean, propina:Double ): String{
     var monto = precio * cantLitros
     if ( darPropina){
         monto +=  propina
@@ -198,6 +202,8 @@ private fun calcularMonto(precio: Double, cantLitros: Double, darPropina: Boolea
     return NumberFormat.getCurrencyInstance().format(monto)
 
 }
+
+
 @Preview(showBackground = true)
 @Composable
 fun CostGasLayoutPreview() {
